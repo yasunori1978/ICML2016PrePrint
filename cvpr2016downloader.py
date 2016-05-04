@@ -19,7 +19,7 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
             if '<published>' in l:
                 ll=l.split('</published>')[0]
                 lll=ll.split('-')
-                if int(lll[0].replace('<published>','')) < 2015 or ( int(lll[0].replace('<published>','')) > 2015 and int(lll[1]) < 10 ):
+                if int(lll[0].replace('<published>','')) < 2015 or ( int(lll[0].replace('<published>','')) == 2015 and int(lll[1]) < 10 ):
                     might_be_CVPR = 0
                     
                     
