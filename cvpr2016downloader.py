@@ -57,8 +57,7 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         pdf = "Not Found in ArXiv"
 
     print pdf+"\t"+title+"\t"+aus+"\t"+abs
-
-might_be_CVPR = 1
+    might_be_CVPR = 1
 
 
 
