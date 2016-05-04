@@ -7,7 +7,7 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
     might_be_CVPR=0
     if not '<a' in l:
         title = l.split('<strong>')[1].split(';')[0].split('</strong>')[0].replace('&#8220','“').replace('&#8221','”').replace(':',' ').rstrip()
-        title = title.replace('<small>','').replace('</small>','').replace('<i>','').replace('</i>','')
+        title = title.replace('<small>','').replace('</small>','').replace('<i>','').replace('</i>','').replace('<sup>','').replace('</sup>','')
         
         url = 'http://export.arxiv.org/api/query?search_query=all:'+title.replace('-',' ')+'&start=0&max_results=1'
     try:
@@ -19,7 +19,7 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         for l in urllib.urlopen(url).readlines():
 
             if '<title>' in l:
-                l_title = l.split('<title>')[1].split('</title>')[0].rstrip().replace('&#8220','“').replace('&#8221','”').replace(':',' ').replace('<small>','').replace('</small>','').replace('<i>','').replace('</i>','')
+                l_title = l.split('<title>')[1].split('</title>')[0].rstrip().replace('&#8220','“').replace('&#8221','”').replace(':',' ').replace('<small>','').replace('</small>','').replace('<i>','').replace('</i>','').replace('<sup>','').replace('</sup>','')
             
             if '</arxiv:comment>' in l:
                 if 'CVPR 2016' in l:
