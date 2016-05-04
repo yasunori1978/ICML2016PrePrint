@@ -2,6 +2,8 @@
 # -*- encoding:utf-8 -*-
 import urllib
 res = urllib.urlopen("http://cvpr2016.thecvf.com/program/main_conference")
+might_be_CVPR = 0
+
 for l in [ line  for line in res.readlines() if '<strong>' in line ]:
     if not '<a' in l:
         title = l.split('<strong>')[1].split(';')[0].split('</strong>')[0].replace('&#8220','“').replace('&#8221','”').replace(':',' ')
@@ -9,21 +11,31 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         url = 'http://export.arxiv.org/api/query?search_query=all:'+title+'&start=0&max_results=1'
     try:
 
-        
-
         authors = []
         pdf = ""
         abses=[]
         
         for l in urllib.urlopen(url).readlines():
+            if '<published>' in l:
+                ll=l.split('</published>')[0]
+                lll=ll.split('-')
+                if int(lll[0].replace('<published>','')) == 2015 and int(lll[1]) >= 10:
+                    might_be_CVPR = 1
+                if int(lll[0].replace('<published>','')) == 2016:
+                    might_be_CVPR = 1
+                    
+                    
+            if '</arxiv:comment>' in l:
+                if 'CVPR' in l and '2016' in l:
+                    might_be_CVPR = 1
+
+                    
             if '<link title="pdf"' in l:
                 pdf = l.split('"')[3]
             if '<name>' in l:
                 authors.append(l)
-
             if '<summary>' in l or sum == 1:
                 sum = 1
-            if sum == 1:    
                 abses.append(l)
                     
             if '</summary>' in l:
@@ -42,12 +54,13 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         pdf = "Not Found in ArXiv"
         aus = ""
         abs = ""
-        
-    print pdf+"\t"+title+"\t"+aus+"\t"+abs
-        
+    if might_be_CVPR == 0:
+        pdf = "Not Found in ArXiv"
+        print pdf+"\t"+title+"\t"+aus+"\t"+abs
+
+might_be_CVPR = 0        
 
 
 
         
-
 
