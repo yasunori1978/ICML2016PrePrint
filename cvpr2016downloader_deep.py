@@ -2,13 +2,14 @@
 # -*- encoding:utf-8 -*-
 import urllib
 res = urllib.urlopen("http://cvpr2016.thecvf.com/program/main_conference")
-might_be_CVPR = 1
 
 for l in [ line  for line in res.readlines() if '<strong>' in line ]:
+    might_be_CVPR=0
     if not '<a' in l:
-        title = l.split('<strong>')[1].split(';')[0].split('</strong>')[0].replace('&#8220','“').replace('&#8221','”').replace(':',' ')
+        title = l.split('<strong>')[1].split(';')[0].split('</strong>')[0].replace('&#8220','“').replace('&#8221','”').replace(':',' ').rstrip()
+
         
-        url = 'http://export.arxiv.org/api/query?search_query=all:'+title+'&start=0&max_results=1'
+        url = 'http://export.arxiv.org/api/query?search_query=all:'+title.replace('-',' ')+'&start=0&max_results=1'
     try:
 
         authors = []
@@ -17,14 +18,12 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         abses=[]
         
         for l in urllib.urlopen(url).readlines():
-            if '<published>' in l:
-                ll=l.split('</published>')[0]
-                lll=ll.split('-')
-                if int(lll[0].replace('<published>','')) < 2015 or ( int(lll[0].replace('<published>','')) == 2015 and int(lll[1]) < 10 ):
-                    might_be_CVPR = 0
 
+            if '<title>' in l:
+                l_title = l.split('<title>')[1].split('</title>')[0].rstrip().replace('&#8220','“').replace('&#8221','”').replace(':',' ').replace('<small>','').replace('</small>','')
+            
             if '</arxiv:comment>' in l:
-                if 'CVPR' in l and '2016' in l:
+                if 'CVPR 2016' in l:
                     might_be_CVPR = 1
 
                     
@@ -59,9 +58,8 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
                 elif 'Network' in l:
                     deep = 1
 
-                if deep == 1:
-                    abses.append(l)
-                    
+                abses.append(l)
+
             if '</summary>' in l:
                 sum = 0
                 
@@ -70,24 +68,21 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         for author in authors:
             aus += (author.split('<name>')[1].split('</name>')[0].rstrip())+","
         for ab in abses:
-            ab = ab.replace('<summary>',"")
-            ab = ab.replace('</summary>',"")
-            abs += ab.rstrip()
+            abs += ab.replace('<summary>',"").replace('</summary>',"").rstrip()
             
     except IndexError:
         pdf = "Not Found in ArXiv"
-        aus = ""
-        deep = 0
-        abs = ""
-
-    if might_be_CVPR == 0:
-        pdf = "Not Found in ArXiv"
         
-    if deep == 1:
+    if l_title.lower() in title.lower():
+        next
+    else:
+        if might_be_CVPR == 0:        
+            pdf = "Not Found in ArXiv"
+
+    if deep == 1:        
         print pdf+"\t"+title+"\t"+aus+"\t"+abs
-    might_be_CVPR = 1
-
-
-
+    deep = 0
+    
+might_be_CVPR=0
         
 
