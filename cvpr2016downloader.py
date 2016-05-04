@@ -9,13 +9,13 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         url = 'http://export.arxiv.org/api/query?search_query=all:'+title+'&start=0&max_results=1'
     try:
 
-        link = urllib.urlopen(url).readlines() 
+        
 
         authors = []
         pdf = ""
         abses=[]
         
-        for l in link:
+        for l in urllib.urlopen(url).readlines():
             if '<link title="pdf"' in l:
                 pdf = l.split('"')[3]
             if '<name>' in l:
