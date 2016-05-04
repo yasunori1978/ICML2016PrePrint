@@ -46,14 +46,17 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
             
     except IndexError:
         pdf = "Not Found in ArXiv"
-
+        aus = ""
+        abs = ""
         
     if l_title.lower() in title.lower():
         next
     else:
         if might_be_CVPR == 0:        
             pdf = "Not Found in ArXiv"
-            
+            aus = ""
+            abs = ""
+
     print pdf+"\t"+title+"\t"+aus+"\t"+abs
 
 might_be_CVPR=0
