@@ -2,7 +2,7 @@
 # -*- encoding:utf-8 -*-
 import urllib
 res = urllib.urlopen("http://cvpr2016.thecvf.com/program/main_conference")
-might_be_CVPR = 0
+might_be_CVPR = 1
 
 for l in [ line  for line in res.readlines() if '<strong>' in line ]:
     if not '<a' in l:
@@ -19,10 +19,8 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
             if '<published>' in l:
                 ll=l.split('</published>')[0]
                 lll=ll.split('-')
-                if int(lll[0].replace('<published>','')) == 2015 and int(lll[1]) >= 10:
-                    might_be_CVPR = 1
-                if int(lll[0].replace('<published>','')) == 2016:
-                    might_be_CVPR = 1
+                if int(lll[0].replace('<published>','')) < 2015 or ( int(lll[0].replace('<published>','')) > 2015 and int(lll[1]) < 10 ):
+                    might_be_CVPR = 0
                     
                     
             if '</arxiv:comment>' in l:
@@ -54,11 +52,13 @@ for l in [ line  for line in res.readlines() if '<strong>' in line ]:
         pdf = "Not Found in ArXiv"
         aus = ""
         abs = ""
+        
     if might_be_CVPR == 0:
         pdf = "Not Found in ArXiv"
+
     print pdf+"\t"+title+"\t"+aus+"\t"+abs
 
-might_be_CVPR = 0        
+might_be_CVPR = 1
 
 
 
